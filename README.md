@@ -3,7 +3,10 @@
 
 ### Inicie o docker com terraform instalado:
 
+Entre no diretorio configure o arquivo `.env` e execute:
+
 ```bash
-docker build -t terraform-code:1.0 .
-docker run -it --rm --env-file .env -v $(pwd):/tfcode --name tf terraform-code:1.0 bash
+make terraform-init
+make terraform-plan
+make terraform-apply
 ```
