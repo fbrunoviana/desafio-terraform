@@ -1,9 +1,9 @@
 variable "username" {
-  default = "guelo"
+  default     = "guelo"
   description = "Valor do usuario do banco de dados"
 }
 
 variable "password" {
-  default = "gueloqueima"
+  default     = "gueloqueima"
   description = "Valor da senha do banco de dados"
 }
