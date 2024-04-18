@@ -6,18 +6,19 @@ provider "aws" {
 resource "aws_launch_configuration" "multiples_guelo" {
   image_id        = "ami-0fb653ca2d3203ac1"
   instance_type   = "t2.micro"
-  security_groups = ["aws_security_group.sg_guelo.id"]
-  user_data       = <<-EOF
+  security_groups = [aws_security_group.sg_guelo.id]
+  user_data = <<-EOF
               #! /bin/bash
-              echo "Guelo queima em multiplos versos" > /var/www/hmtl/index.html
-              nohup busybox httpd -f -p ${var.port_guelo} & 
+              mkdir -p ${var.guelo_directory}
+              echo "hello guelo" > ${var.guelo_directory}/index.html
+              nohup busybox httpd -f -p ${var.port_guelo} -h ${var.guelo_directory} &
               EOF
 
-  # Required when using a launch configuration with an auto scaling group. lifecycle { create_before_destroy = true }
   lifecycle {
     create_before_destroy = true
   }
 }
+
 resource "aws_autoscaling_group" "gr_multiples_guelo" {
   launch_configuration = aws_launch_configuration.multiples_guelo.name
   vpc_zone_identifier  = data.aws_subnets.sub_guelo.ids
@@ -35,6 +36,12 @@ resource "aws_security_group" "sg_guelo" {
   ingress {
     from_port   = var.port_guelo
     to_port     = var.port_guelo
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+    ingress {
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
